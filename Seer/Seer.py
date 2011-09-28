@@ -1,7 +1,7 @@
 from base import *
 #import Shell
 
-class Seer(threading.Thread):
+class Seer():
     __shared_state = {} 
 #    cameras = []
 #    shell_thread = ''
@@ -14,7 +14,7 @@ class Seer(threading.Thread):
     def __init__(self, config = ''):
         self.__dict__ = self.__shared_state
         #ActiveState "Borg" Singleton replacement design
-        if self.__dict__.has_key(config):
+        if self.__dict__.has_key("config"):
             return  #successive calls to Seer simply return the borg'd object
 
         #read config file
@@ -33,7 +33,7 @@ class Seer(threading.Thread):
 
         #self.web = Web(self.config['web'])
 
-        self.bind = DataStore(self.config['mongo'], self.config['database'])
+        self.bind = DataStore(self.config['mongo'], database = self.config['database'])
         self.session = Session(self.bind) 
 
         #self.controls = Controls(self.config['arduino'])
@@ -41,7 +41,7 @@ class Seer(threading.Thread):
         #shell_thread = Shell.Shell()
         #shell_thread.setDaemon(True)
         #shell_thread.start()
-        super(Seer, self).__init__()
+        #super(Seer, self).__init__()
 
     def configure(self, config):
         json_config = ''

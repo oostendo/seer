@@ -1,5 +1,6 @@
 import sys, time, os
 import threading
+import binascii
 import json
 from multiprocessing import Process, Queue, Pipe
 
@@ -12,6 +13,7 @@ except(ImportError):
 import cv
 import IPython.Shell
 import pyfirmata
+import bson
 from ming.datastore import DataStore
 from ming import Session
 from ming import Document, Field, schema
