@@ -1,4 +1,6 @@
-import sys, time
+import sys, time, os
+import threading
+import json
 from multiprocessing import Process, Queue, Pipe
 
 import cherrypy
@@ -15,7 +17,7 @@ from ming import Session
 from ming import Document, Field, schema
 
 import SimpleCV
-from SimpleCV.Shell import *
+#from SimpleCV.Shell import *
 from SimpleCV import Image, JpegStreamer, Camera
-from SimpleCV.Display import Display
+#from SimpleCV.Display import Display
 
