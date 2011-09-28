@@ -2,7 +2,11 @@ import sys, time
 from multiprocessing import Process, Queue, Pipe
 
 import cherrypy
-import Image as pil
+try:
+  import Image as pil
+except(ImportError):
+  import PIL.Image as pil
+
 import cv
 import IPython.Shell
 import pyfirmata
