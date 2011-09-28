@@ -1,6 +1,5 @@
 import sys, time, os
 import threading
-import binascii
 import json
 from multiprocessing import Process, Queue, Pipe
 
