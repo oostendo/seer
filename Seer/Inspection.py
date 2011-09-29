@@ -11,43 +11,51 @@ class Inspection(ming.MappedClass):
     title = Field(str)
     test_type = Field(str) 
     roi_method = Field(str)#this might be a relation 
-    statistics = RelationProperty('Statistic') 
-    data = {}
+    roi_parameters = Field(ming.schema.Array)
+    statistics = RelationProperty('Statistic')
+
+    results = []
     samples = []
-    unit = "mm"
     showchart = False
     threshold = False
     threshold_event = False
 
     def __init__(self, roisource, statistics):
-	self.roisource = roisource
+        self.roisource = roisource
         self.testsource = testsource
         self.roi_code = compile(roisource, "<string>", "exec")
-        self.statistics = statistics
-
-    def addSample(self, img):
-	roi_origin, roi_offset = exec(self.roi_code)
-        if not roi_offset[0]:
-            return
-        #calculate where we should be looking in the image, skip if no match
-
-        if type(img) != 'array':
-             img = [img]
-
-        for i in img:
-            self.samples.append(i.crop(roi_origin[0], roi_origin[1], roi_offset[0], roi_offset[1]))
-        #add the images into samples
                          
-    def calc(self):
-        for s in statistics:
-            key, val = s.calc(self.samples)
-            self.data[key] = val
-
-    def getData(self):
-        return [self.data[k] for k in sorted(self.data.keys())]
+    def execute(self, frames):
+        if not isinstance(frames, (list, tuple)):
+            frames = [frames]
+        
+        roi_function_ref = getattr(self, roi_method)
+            
+        for frame in frames:
+            samples, roi = roi_function_ref(*self.roi_parameters)
+            
+            for sample in samples:
+            
+                for s in statistics:
+                    results = s.calculate(self.samples)
+            
+                    count = 0 
+                    for r in results:
+                        result.inspection = self
+                        result.frame = frame
+                        result.roi = roi
+                        self.results.append[results]
+                        #probably need to add unit conversion here
+    def record(self)
+        for r in results:
+            results.m.save()
+            
+    def getResults(self):
+        return [r.data for r in self.results]
 
     def clear():
         data = {}
         samples = []
+        results = []
         
 #    def __json__(self):
