@@ -2,6 +2,7 @@ import sys, time, os
 import threading
 import json
 from multiprocessing import Process, Queue, Pipe
+import threading
 
 import cherrypy
 try:
@@ -14,7 +15,10 @@ import IPython.Shell
 import pyfirmata
 import bson
 import ming
+import ming.orm
 from ming.datastore import DataStore
+from ming.orm.declarative import MappedClass
+
 
 import SimpleCV
 #from SimpleCV.Shell import *

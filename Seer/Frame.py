@@ -1,6 +1,15 @@
 from base import *
 from Session import Session
 
+"""
+    f = Frame({ 
+      capturetime = time.time(),
+      camera = "0" })
+      
+    f.image(Seer().cameras[0].
+
+
+"""
 class Frame(ming.Document):
     class __mongometa__:
         session = Session().mingsession
