@@ -13,12 +13,10 @@ import cv
 import IPython.Shell
 import pyfirmata
 import bson
+import ming
 from ming.datastore import DataStore
-from ming import Session
-from ming import Document, Field, schema
 
 import SimpleCV
 #from SimpleCV.Shell import *
 from SimpleCV import Image, JpegStreamer, Camera
 #from SimpleCV.Display import Display
-

@@ -1,15 +1,16 @@
 from base import *
-from Seer.Statistic import Statistic
+from Session import *
+from Statistic import Statistic
 
-class Inspection(MappedClass):
+class Inspection(ming.MappedClass):
     class __mongometa__:
-        session = session
+        session = Session().mingsession
         name = 'inspection'
 
     _id = FieldProperty(schema.ObjectId)    
     title = Field(str)
     test_type = Field(str) 
-    roi_code = Field(str)#this might be a relation 
+    roi_method = Field(str)#this might be a relation 
     statistics = RelationProperty('Statistic') 
     data = {}
     samples = []

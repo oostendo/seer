@@ -1,17 +1,17 @@
 from base import *
-from Seer import Seer
+from Session import Session
 
-class Frame(Document):
+class Frame(ming.Document):
     class __mongometa__:
-        session = Seer().session
+        session = Session().mingsession
         name = 'frame'
 
-    _id = Field(schema.ObjectId)
-    capturetime = Field(float)
-    camera = Field(str)
-    _height = Field(int, if_missing = 0)
-    _width = Field(int, if_missing = 0)
-    _image = Field(schema.Binary) #a base64 encoded image
+    _id = ming.Field(ming.schema.ObjectId)
+    capturetime = ming.Field(float)
+    camera = ming.Field(str)
+    _height = ming.Field(int, if_missing = 0)
+    _width = ming.Field(int, if_missing = 0)
+    _image = ming.Field(ming.schema.Binary) #a base64 encoded image
 
     @apply
     def image():
