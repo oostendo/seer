@@ -1,6 +1,6 @@
 from base import *
 from Session import Session
-#import Shell
+from Inspection import Inspection
 
 class Seer(threading.Thread):
     __shared_state = { "initialized": False } 
@@ -28,8 +28,8 @@ class Seer(threading.Thread):
             self.cameras.append(Camera(id, camera))
         #log initialized camera X
 
-        self.inspections = []
-        #self.inspections = Inspection.m.find( { "enabled": 1 }).all()
+        self.inspections = Inspection.query.find( enabled = 1 ).all()
+        #self.inspections = Inspection.query.get( enabled = 1 )
          
         self.conditions = []
         #self.conditions = Events.m.find( { "enabled": 1 }).all()
@@ -43,13 +43,12 @@ class Seer(threading.Thread):
 
         #self.controls = Controls(self.config['arduino'])
         
-        if self.config.start_shell:
-            self.shell_thread = Shell.Shell()
-            self.shell_thread.setDaemon(True)
-            self.shell_thread.start()
-        
         self.initialized = True
         super(Seer, self).__init__()
+        
+        if self.config.start_shell:
+            self.shell_thread = Shell.ShellThread()
+            self.shell_thread.start()
 
     def capture(self):
         count = 0
@@ -61,7 +60,7 @@ class Seer(threading.Thread):
             frame.image = img
             
             if self.config.record_all:
-                frame.save()
+                frame.m.save()
             
             currentframes.append(frame)
             self.lastframes.append(frame)
@@ -71,17 +70,22 @@ class Seer(threading.Thread):
                             
             self.framecount = self.framecount + 1
             count = count + 1
+            
+        return currentframes
+            
+    def inspect(self):
+        frames = self.capture()
+            
+        for inspection in self.inspections:
+            data = inspection.execute(frames)
+            for event in self.conditions:
+                if event.test(inspection, data):
+                    event.execute()
 
     def run(self):
         while True:
             timer_start = time.time()
-            frames = self.capture()
-            
-            for inspection in self.inspections:
-                data = inspection.execute(frames)
-                for event in self.conditions:
-                    if event.test(data):
-                        event.execute()
+            self.inspections
             
             self.display.send(frames)
             
@@ -91,4 +95,5 @@ class Seer(threading.Thread):
             else:
                 time.sleep(0)
             
-from Frame import Frame        
+from Frame import Frame
+import Shell

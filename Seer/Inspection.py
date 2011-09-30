@@ -33,24 +33,27 @@ class Inspection(MappedClass):
         #get the ROI function that we want
             
         for frame in frames:
-            samples, roi = roi_function_ref(frame, self.roi_parameters)
+            samples, roi = roi_function_ref(frame)
             
+            if not isinstance(samples, list):
+                samples = [samples]
             
             for sample in samples:
             
-                for m in measurements:
-                    results = m.calculate(self.samples)
+                for m in self.measurements:
+                    r = m.calculate(sample)
                     count = 0
                      
-                    for r in results:
-                        r.roi = roi
-                        r.capturetime = frame.capturetime
-                        r.camera = frame.camera
-                        r.frame_id = frame._id
-                        r.inspection_id = self._id
-                        r.measurement_id = m._id
-                        self.results.append[r]
-                        #probably need to add unit conversion here
+                    
+                    r.roi = roi
+                    r.capturetime = frame.capturetime
+                    r.camera = frame.camera
+                    r.frame_id = frame._id
+                    r.inspection_id = self._id
+                    r.measurement_id = m._id
+                    
+                    self.results.append[r]
+                    #probably need to add unit conversion here
                         
     def record(self):
         for r in results:
@@ -64,10 +67,9 @@ class Inspection(MappedClass):
         self.samples = []
         self.results = []
         
-    def fixed_window(self, frame, parameters):        
-        params = tuple(parameters)
-        return ( frame.image.crop(*parameters),
-            ( parameters ) )
+    def fixed_window(self, frame):        
+        params = tuple([int(p) for p in self.roi_parameters])
+        return (frame.image.crop(*params), params)
 #    def __json__(self):
  
 ming.orm.Mapper.compile_all()   

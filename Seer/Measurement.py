@@ -34,7 +34,7 @@ class Measurement(MappedClass):
     inspection = ming.orm.RelationProperty('Inspection')
     inspection_id = ming.orm.ForeignIdProperty('Inspection')
 
-    def calculate(self, parameters, samples):
+    def calculate(self, parameters, sample):
         
         #basic validation, make sure all parameters are here -- but optional ones can be passed
         for param in self.required_parameters:
@@ -43,13 +43,13 @@ class Measurement(MappedClass):
         
         function_ref = getattr(self, test_method)
         data = []
-        for s in samples:
-            result = function_ref(s, parameters)
+        
+        result = function_ref(sample, parameters)
            
-            data.append(Result({
-                "statistic": self,
-                "data": result
-            }))
+        data.append(Result({
+            "measurement_id": self._id,
+            "data": result
+        }))
         
         return data
         

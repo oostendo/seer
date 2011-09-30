@@ -1,7 +1,17 @@
 import threading
-import IPython.Shell.IPShell
+from base import *
+from SimpleCV import *
+import platform
+
+#Load simpleCV libraries
+from SimpleCV.Shell import *
 
 class ShellThread(threading.Thread):
     def run(self):
-        shell = IPython.Shell.IPShell(user_ns=globals())	
-        shell.mainloop()
+        scvShell = setup_shell()
+        sys.exit(scvShell())
+
+from Seer import Seer
+from Inspection import Inspection
+from Measurement import Measurement
+from Result import Result
