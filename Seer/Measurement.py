@@ -12,6 +12,7 @@ from Result import Result
         required_parameters = [],
         optional_parameters = ['threshval', 'minsize', 'maxsize', 'threshblocksize', 'threshconstant'],
         result_labels = ["area","centroid"],
+        is_numeric = 1,
         units =  "px",
         inspection_id = i._id)
 
@@ -24,11 +25,13 @@ class Measurement(MappedClass):
         
     _id = ming.orm.FieldProperty(ming.schema.ObjectId)  
     name = ming.orm.FieldProperty(str)
+    #this should be a unique name
     label = ming.orm.FieldProperty(str)
     test_method = ming.orm.FieldProperty(str)
     required_parameters = ming.orm.FieldProperty(ming.schema.Array(str))
     optional_parameters = ming.orm.FieldProperty(ming.schema.Array(str))
     result_labels = ming.orm.FieldProperty(ming.schema.Array(str))
+    is_numeric = ming.orm.FieldProperty(int)
     units = ming.orm.FieldProperty(str)
     
     inspection = ming.orm.RelationProperty('Inspection')

@@ -37,6 +37,7 @@ class Seer(threading.Thread):
         #self.display = Display()
         self.lastframes = []
         self.framecount = 0
+        self.results = [] #results for each frame
         #log display started
 
         #self.web = Web(self.config['web'])
@@ -63,29 +64,42 @@ class Seer(threading.Thread):
                 frame.m.save()
             
             currentframes.append(frame)
-            self.lastframes.append(frame)
             
             while len(self.lastframes) > self.config.max_frames:
                 self.lastframes.popleft()
+                self.results.popleft()
                             
             self.framecount = self.framecount + 1
             count = count + 1
+        self.lastframes.append(currentframes)
             
         return currentframes
             
     def inspect(self):
         frames = self.capture()
-            
-        for inspection in self.inspections:
-            data = inspection.execute(frames)
-            for event in self.conditions:
-                if event.test(inspection, data):
-                    event.execute()
-
+        frame_results = []
+        for frame in frames:   
+            for inspection in self.inspections:
+                if frame.camera != inspection.camera:
+                    continue
+                
+                results = inspection.execute(frame)
+                if results:
+                    frame_results.extend(results)
+        
+        self.results.append(frame_results)
+        
+    def check(self):
+        for watcher in self.watchers():
+            if watcher.enabled:
+                watcher.check()
+    
     def run(self):
         while True:
             timer_start = time.time()
-            self.inspections
+            
+            self.inspect()
+            self.check()
             
             self.display.send(frames)
             
