@@ -3,14 +3,18 @@ from Session import Session
 from Result import Result
 
 """
-
+    The measurement object takes any regions of interest in an Inspection and
+    returns a Result object with the appropriate measurement.
+    
+    The handler 
+    
+    Note that measurements are each linked to a single Inspection object.
 
     Measurement( 
         name =  "largestblob",
         label = "Largest Blob",
         test_method = "largest_blob",
-        required_parameters = [],
-        optional_parameters = ['threshval', 'minsize', 'maxsize', 'threshblocksize', 'threshconstant'],
+        parameters = {'threshval': 127 },
         result_labels = ["area","centroid"],
         is_numeric = 1,
         units =  "px",
@@ -28,8 +32,7 @@ class Measurement(MappedClass):
     #this should be a unique name
     label = ming.orm.FieldProperty(str)
     test_method = ming.orm.FieldProperty(str)
-    required_parameters = ming.orm.FieldProperty(ming.schema.Array(str))
-    optional_parameters = ming.orm.FieldProperty(ming.schema.Array(str))
+    parameters = ming.orm.FieldProperty(ming.schema.Array(str))
     result_labels = ming.orm.FieldProperty(ming.schema.Array(str))
     is_numeric = ming.orm.FieldProperty(int)
     units = ming.orm.FieldProperty(str)
@@ -37,24 +40,16 @@ class Measurement(MappedClass):
     inspection = ming.orm.RelationProperty('Inspection')
     inspection_id = ming.orm.ForeignIdProperty('Inspection')
 
-    def calculate(self, parameters, sample):
-        
-        #basic validation, make sure all parameters are here -- but optional ones can be passed
-        for param in self.required_parameters:
-            if not parameters[param]:
-                raise "Parameter " + param + " is required for Statistic " + self.name
+    def calculate(self, sample):
         
         function_ref = getattr(self, test_method)
-        data = []
         
-        result = function_ref(sample, parameters)
+        result = function_ref(sample, self.parameters)
            
-        data.append(Result({
+        return Result({
             "measurement_id": self._id,
             "data": result
-        }))
-        
-        return data
+        })
         
     def mean_color(self, img, parameters):
         return [str(c) for c in img.meanColor()]

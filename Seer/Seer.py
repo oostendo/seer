@@ -3,6 +3,10 @@ from Session import Session
 from Inspection import Inspection
 
 class Seer(threading.Thread):
+    """
+    
+    
+    """
     __shared_state = { "initialized": False } 
 #    cameras = []
 #    shell_thread = ''
