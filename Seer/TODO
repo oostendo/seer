@@ -1,0 +1,11 @@
+formalize the handler/plugin pattern
+go all or nothing on the ORM
+write more core functions for each type
+get drawing events in the display layer (monkeypatch __getattribute__ ?)
+basic web events for object creation
+JQuery/Processing.js frontend
+ - draw ROI or Create inspection with ROI method
+ - color picker 
+ - add measurements to inspection
+ - add watchers
+ - add controller events
