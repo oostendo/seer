@@ -2,13 +2,17 @@ from base import *
 from Session import Session
 
 """
+    Frame Objects are a mongo-friendly wrapper for SimpleCV image objects,
+    containing additional properties for the originating camera and time of capture.
+    
+    Note that Frame.image property must be used as a getter-setter.
+
     f = Frame({ 
       capturetime = time.time(),
       camera = "0" })
       
-    f.image(Seer().cameras[0].
-
-
+    f.image = Seer().cameras[0].getImage()
+    f.save()
 """
 class Frame(ming.Document):
     class __mongometa__:

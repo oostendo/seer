@@ -4,14 +4,32 @@ from Measurement import Measurement
 
 class Inspection(MappedClass):
     """
+    An Inspection determines what part of an image to look at from a given camera
+    and what Measurement objects get taken.  It has a single handler, the roi_method,
+    which determines ROI for the measurements.
     
-    Inspection(
+    The roi_method determines if measurements are or are not taken.  A completely
+    passive roi_method would return the entire image space (taking measurements
+    on every frame), and an "enabled = 0" equivalent would be roi_method always
+    returning None.
+    
+    The roi_method can return several samples, pieces of the evaluated frame,
+    and these get passed in turn to each Measurement.
+    
+    The results from these measurements are aggregated and returned from the
+    Inspection.execute() function, which gives all samples to each measurement.
+    
+    insp = Inspection(
         name = "Blob Measurement 1",
         test_type = "Measurement",
         enabled = 1,
         roi_method = "fixed_window",
         camera = "0",
         roi_parameters = ["100", "100", "400", "300"]) #x,y,w,h
+    
+    Measurement(..., inspection_id = ins._id )
+    
+    results = insp.execute()
     
     """
     class __mongometa__:
@@ -28,6 +46,11 @@ class Inspection(MappedClass):
     measurements = ming.orm.RelationProperty('Measurement')
                          
     def execute(self, frame):
+        """
+        The exeecute method takes in a frame object, executes the roi_method
+        and sends the samples to each measurement object.  The results are returned
+        as a multidimensional array [ samples ][ measurements ] = result
+        """
 
         roi_function_ref = getattr(self, self.roi_method)
         #get the ROI function that we want
@@ -57,6 +80,8 @@ class Inspection(MappedClass):
                         
 
         return results
+
+    #below are "core" inspection functions
 
     def fixed_window(self, frame):        
         params = tuple([int(p) for p in self.roi_parameters])
