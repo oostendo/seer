@@ -32,7 +32,7 @@ class Statistic(ming.Document):
 
         del self.__dict__['unsavedresults']
 
-    def processColumns(self, results, name, column_function)
+    def calculate(self, results, name, column_function):
         measurement_group = {}
         
         self.unsavedresults = []
@@ -49,16 +49,15 @@ class Statistic(ming.Document):
                 
         
         for m_id in measurement_group.keys():
-            measurement = Measurement.query.get( _id = m_id ):
+            measurement = Measurement.query.get( _id = m_id )
             if not measurement.is_numeric:
                 continue
             
             data_table = np.array(measurement_group[m_id])
             
             count = 0
-            for label in measurement.labels:
-                computed_label = name + "(" + measurement.name + "." + label + ")"
-                self.data[computed_label] = column_function(data_table[:,count])
+            for label in measurement.result_labels:
+                self.data[m._id][label] = column_function(data_table[:,count])
                 count = count + 1
                 
     def save(self):

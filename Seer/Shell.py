@@ -1,5 +1,6 @@
 import threading
 from base import *
+from Session import Session
 from SimpleCV import *
 import platform
 

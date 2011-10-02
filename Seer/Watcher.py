@@ -8,7 +8,11 @@ class Watcher(MappedClass):
         conditions = ["threshold_greater"],
         handlers = ["log_statistics"],
         enabled = 1,
-        parameters = { "threshold_greater": { "threshold": 5000, "samples: 5", "measurement": "Largest Blob", "label": "area" })
+        parameters = { "threshold_greater": {
+            "threshold": 5000,
+            "samples": 5,
+            "measurement_name": "Largest Blob",
+            "label": "area" })
     
     w.check()
     """
@@ -41,9 +45,28 @@ class Watcher(MappedClass):
         return True
     
     
-    def threshold_greater(self, threshold, samples, measurement, label):
+    def threshold_greater(self, threshold, measurement_name, label, samples = 1):
+        resultset = Seer().results[-samples:]
+        measurement = Measurement.query.get( name = measurement_name )
+        if not measurement:
+            return False
         
-    
+        result_index = measurement.result_labels.index(label)
+        if result_index == None:
+            return False
+        
+        result_set = [ r for r in list if r.measurement_id == measurement._id ]
+        
+        stat = Statistic( {
+            name: "Average of " + measurement_name,
+            capturetime: time.time()
+        })
+        #MOVE THE ABOVE STUFF TO A DECORATOR
+        
+        stat.calculate(result_set, 'mean', np.mean)
+        if stat.data[measurement._id][result_index] > threshold:
+            return stat
+        return False
     
     def log_statistics(self, statistics):
         for stat in statistics:

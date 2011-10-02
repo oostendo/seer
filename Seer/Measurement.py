@@ -25,13 +25,15 @@ class Measurement(MappedClass):
         
     _id = ming.orm.FieldProperty(ming.schema.ObjectId)  
     name = ming.orm.FieldProperty(str)
-    #this should be a unique name
+    #VALIDATION NEEDED: this should be a unique name
     label = ming.orm.FieldProperty(str)
     test_method = ming.orm.FieldProperty(str)
     required_parameters = ming.orm.FieldProperty(ming.schema.Array(str))
     optional_parameters = ming.orm.FieldProperty(ming.schema.Array(str))
     result_labels = ming.orm.FieldProperty(ming.schema.Array(str))
+    
     is_numeric = ming.orm.FieldProperty(int)
+    #VALIDATION NEEDED, data should be castable 
     units = ming.orm.FieldProperty(str)
     
     inspection = ming.orm.RelationProperty('Inspection')
@@ -51,7 +53,8 @@ class Measurement(MappedClass):
            
         data.append(Result({
             "measurement_id": self._id,
-            "data": result
+            "data": result,
+            "is_numeric": self.is_numeric
         }))
         
         return data

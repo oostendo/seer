@@ -15,6 +15,7 @@ class Result(ming.Document):
     roi = ming.Field(ming.schema.Array(int))
     capturetime = ming.Field(float)
     camera = ming.Field(str)
+    is_numeric = ming.Field(int)
 
     measurement_id = ming.Field(ming.schema.ObjectId)
     inspection_id = ming.Field(ming.schema.ObjectId)

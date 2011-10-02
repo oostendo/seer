@@ -37,3 +37,8 @@ class Frame(ming.Document):
           
        return property(fget, fset)
        
+    def __repr__(self):
+       return "<Seer Frame Object %d,%d captured with '%s' at %f>" % (
+            self._width, self._height, self.camera, self.capturetime) 
+        
+       
