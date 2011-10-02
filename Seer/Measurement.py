@@ -24,20 +24,20 @@ from Result import Result
 """
 class Measurement(MappedClass):
     class __mongometa__:
-        session = Session().getORMSession()
+        session = Session().mingsession()
         name = 'statistic'
         
-    _id = ming.orm.FieldProperty(ming.schema.ObjectId)  
-    name = ming.orm.FieldProperty(str)
+    _id = ming.Field(ming.schema.ObjectId)  
+    name = ming.Field(str)
     #VALIDATION NEEDED: this should be a unique name
-    label = ming.orm.FieldProperty(str)
-    test_method = ming.orm.FieldProperty(str)
-    parameters = ming.orm.FieldProperty(ming.schema.Array(str))
-    result_labels = ming.orm.FieldProperty(ming.schema.Array(str))
+    label = ming.Field(str)
+    test_method = ming.Field(str)
+    parameters = ming.Field(ming.schema.Array(str))
+    result_labels = ming.Field(ming.schema.Array(str))
     
-    is_numeric = ming.orm.FieldProperty(int)
+    is_numeric = ming.Field(int)
     #VALIDATION NEEDED, data should be castable 
-    units = ming.orm.FieldProperty(str)
+    units = ming.Field(str)
     
     inspection = ming.orm.RelationProperty('Inspection')
     inspection_id = ming.orm.ForeignIdProperty('Inspection')

@@ -18,7 +18,7 @@ class Statistic(ming.Document):
         session = Session().mingsession
         name = 'statistic'
     
-    _id = ming.orm.FieldProperty(ming.schema.ObjectId)    
+    _id = ming.Field(ming.schema.ObjectId)    
     
     data = ming.Field(ming.schema.Object)
     name = ming.Field(str)

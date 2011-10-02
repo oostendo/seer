@@ -29,15 +29,15 @@ class Watcher(MappedClass):
     w.check()
     """
     class __mongometa__:
-        session = Session().getORMSession()
+        session = Session().mingsession()
         name = 'watcher'
         
-    _id = ming.orm.FieldProperty(ming.schema.ObjectId)    
-    name = ming.orm.FieldProperty(str)
-    conditions = ming.orm.FieldProperty(ming.schema.Array(str))
-    handlers = ming.orm.FieldProperty(ming.schema.Array(str))#this might be a relation 
-    enabled = ming.orm.FieldProperty(int)
-    parameters = ming.orm.FieldProperty(ming.schema.Object)
+    _id = ming.Field(ming.schema.ObjectId)    
+    name = ming.Field(str)
+    conditions = ming.Field(ming.schema.Array(str))
+    handlers = ming.Field(ming.schema.Array(str))#this might be a relation 
+    enabled = ming.Field(int)
+    parameters = ming.Field(ming.schema.Object)
     
     def check(self):
         """

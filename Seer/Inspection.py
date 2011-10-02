@@ -33,16 +33,16 @@ class Inspection(MappedClass):
     
     """
     class __mongometa__:
-        session = Session().getORMSession()
+        session = Session().mingsession()
         name = 'inspection'
         
-    _id = ming.orm.FieldProperty(ming.schema.ObjectId)    
-    name = ming.orm.FieldProperty(str)
-    test_type = ming.orm.FieldProperty(str) 
-    roi_method = ming.orm.FieldProperty(str)#this might be a relation 
-    enabled = ming.orm.FieldProperty(int)
-    camera = ming.orm.FieldProperty(str)
-    roi_parameters = ming.orm.FieldProperty(ming.schema.Array(str))
+    _id = ming.Field(ming.schema.ObjectId)    
+    name = ming.Field(str)
+    test_type = ming.Field(str) 
+    roi_method = ming.Field(str)#this might be a relation 
+    enabled = ming.Field(int)
+    camera = ming.Field(str)
+    roi_parameters = ming.Field(ming.schema.Array(str))
     measurements = ming.orm.RelationProperty('Measurement')
                          
     def execute(self, frame):
@@ -87,7 +87,7 @@ class Inspection(MappedClass):
         params = tuple([int(p) for p in self.roi_parameters])
         return (frame.image.crop(*params), params)
 #    def __json__(self):
- 
+    
 ming.orm.Mapper.compile_all()   
 for mapper in ming.orm.Mapper.all_mappers():
     Session().mingsession.ensure_indexes(mapper.collection)

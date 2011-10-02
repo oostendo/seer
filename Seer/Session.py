@@ -31,30 +31,7 @@ class Session():
         
         self.bind = DataStore(self.mongo, database = self.database)
         self.mingsession = ming.Session(self.bind)
-        self.ormsessions = {}
-        #connect to mongo, and start our pool of threadsafe orm sessions
     
-    def getORMSession(self):
-        """
-        While base ming has a state-free session handler, to use Object-Relations
-        you have to instantiate sessions that are Thread-local.  This function
-        will take care of initializing and allocating ming's ThreadLocalORMSession
-        on a per-thread basis
-        
-        General rule, if you use ming.orm in the class declaration -- you will
-        need to set session to getORMSession in the __mongometa__ subclass 
-        """
-        tid = threading.current_thread()
-        if not self.ormsessions.has_key(tid):
-            self.ormsessions[tid] = ming.orm.ThreadLocalORMSession(doc_session = self.mingsession)
-
-        return self.ormsessions[tid]
-        
-    def ORMSave(self):
-        return self.getORMSession().flush()
-        
-    def ORMClear(self):
-        return self.getORMSession().clear()
         
     def __getattr__(self, attr):
         return ''  #return false on any non-present properties
