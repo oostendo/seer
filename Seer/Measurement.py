@@ -50,8 +50,7 @@ class Measurement(MappedClass):
         return Result({
             "measurement_id": self._id,
             "data": result,
-            "is_numeric": self.is_numeric
-        }))
+            "is_numeric": self.is_numeric})
         
         return data
         
@@ -62,6 +61,7 @@ class Measurement(MappedClass):
         blobs = [str(n) for n in img.findBlobs(**parameters)]
         
         if blobs:
+            blobs[-1].draw()
             return [str(blobs[-1].area())]
         
         return ''

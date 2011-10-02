@@ -62,6 +62,7 @@ class Inspection(MappedClass):
             samples = [samples]
         
         results = []
+        frame.image.addDrawingLayer()
         for sample in samples:
             
             for m in self.measurements:
@@ -76,7 +77,8 @@ class Inspection(MappedClass):
                     
                 results.append[r]
                 #probably need to add unit conversion here
-                        
+            
+            frame.image.dl().blit(sample, (roi[0], roi[1]))
 
         return results
     

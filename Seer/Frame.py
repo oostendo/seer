@@ -24,25 +24,39 @@ class Frame(ming.Document):
     camera = ming.Field(str)
     _height = ming.Field(int, if_missing = 0)
     _width = ming.Field(int, if_missing = 0)
-    _image = ming.Field(ming.schema.Binary) #a base64 encoded image
+    _image = ming.Field(ming.schema.Binary) #binary image data
+    _layer = mingField(ming.schema.Binary) #layer data
 
     @apply
     def image():
-       def fget(self):
-          bitmap = cv.CreateImageHeader((self._width, self._height), cv.IPL_DEPTH_8U, 3)
-          cv.SetData(bitmap, self._image)
-          #need to find some way to cache this
+        def fget(self):
+            bitmap = cv.CreateImageHeader((self._width, self._height), cv.IPL_DEPTH_8U, 3)
+            cv.SetData(bitmap, self._image)
+            
+            self._imgcache = Image(bitmap)
+            
+            return Image(bitmap)
           
-          return Image(bitmap)
+        def fset(self, img):
+            self._width, self._height = img.size()
+            self._image = bson.Binary(img.getBitmap().tostring())
           
-       def fset(self, img):
-          self._width, self._height = img.size()
-          self._image = bson.Binary(img.getBitmap().tostring())
+            if len(img._mLayers):
+                if len(img._mLayers > 1):
+                     img = img.copy()
+                     img.mergeLayers()
+                self._layer = bson.Binary(pygame.image.tostring(img.dl()._mSurface, "RGBA"))
           
-       return property(fget, fset)
+            self._imgcache = img
+            
+        return property(fget, fset)
        
     def __repr__(self):
        return "<Seer Frame Object %d,%d captured with '%s' at %f>" % (
             self._width, self._height, self.camera, self.capturetime) 
         
+    def save(self):
+        self.image = self._imgcache #get any changes made before save
+        delete self.__dict__['_imgcache']
+        self.m.save()
        
