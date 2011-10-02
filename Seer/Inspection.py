@@ -43,11 +43,10 @@ class Inspection(MappedClass):
     enabled = ming.Field(int)
     camera = ming.Field(str)
     roi_parameters = ming.Field(ming.schema.Array(str))
-    measurements = ming.orm.RelationProperty('Measurement')
                          
     def execute(self, frame):
         """
-        The exeecute method takes in a frame object, executes the roi_method
+        The execute method takes in a frame object, executes the roi_method
         and sends the samples to each measurement object.  The results are returned
         as a multidimensional array [ samples ][ measurements ] = result
         """
@@ -80,6 +79,12 @@ class Inspection(MappedClass):
                         
 
         return results
+    
+    @property
+    def measurements(self):
+        #note, should figure out some way to cache this
+        return Measurement.m.find( inspection_id = self.id ).all()
+
 
     #below are "core" inspection functions
 

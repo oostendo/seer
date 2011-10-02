@@ -39,8 +39,7 @@ class Measurement(MappedClass):
     #VALIDATION NEEDED, data should be castable 
     units = ming.Field(str)
     
-    inspection = ming.orm.RelationProperty('Inspection')
-    inspection_id = ming.orm.ForeignIdProperty('Inspection')
+    inspection_id = ming.Field(ming.schema.ObjectId)
 
     def calculate(self, sample):
         
