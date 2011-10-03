@@ -22,8 +22,7 @@ class Watcher(ming.Document):
             "threshold": 5000,
             "samples": 5,
             "measurement_name": "Largest Blob",
-            "label": "area" })
-    
+            "label": "area" } },
         conditions = ["threshold_greater"],
         handlers = ["log_statistics"])
     w.check()

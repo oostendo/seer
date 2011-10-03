@@ -4,7 +4,7 @@ from Inspection import Inspection
 
 class Seer(threading.Thread):
     """
-    
+    The Seer object 
     
     """
     __shared_state = { "initialized": False } 

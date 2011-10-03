@@ -24,7 +24,7 @@ class Inspection(ming.Document):
         test_type = "Measurement",
         enabled = 1,
         roi_method = "fixed_window",
-        camera = "0",
+        camera = "Default Camera",
         roi_parameters = ["100", "100", "400", "300"])) #x,y,w,h
 
     insp.save()
