@@ -112,6 +112,8 @@ class Seer(threading.Thread):
                 time.sleep(timeleft)
             else:
                 time.sleep(0)
-            
+    
+    
+    
 from Frame import Frame
 import Shell

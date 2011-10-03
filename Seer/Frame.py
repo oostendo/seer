@@ -25,17 +25,23 @@ class Frame(ming.Document):
     _height = ming.Field(int, if_missing = 0)
     _width = ming.Field(int, if_missing = 0)
     _image = ming.Field(ming.schema.Binary) #binary image data
-    _layer = mingField(ming.schema.Binary) #layer data
+    _layer = mingField(ming.schema.Binary, if_missing = None) #layer data
 
     @apply
     def image():
         def fget(self):
+            if self.__dict__.has_key('_imgcache'):
+                return self._imgcache
+            
             bitmap = cv.CreateImageHeader((self._width, self._height), cv.IPL_DEPTH_8U, 3)
             cv.SetData(bitmap, self._image)
             
             self._imgcache = Image(bitmap)
+            if self._layer:
+                self._imgcache.dl()._mSurface = pygame.image.fromstring(self._layer, "RGBA")
             
-            return Image(bitmap)
+            #TODO SET LAYER
+            
           
         def fset(self, img):
             self._width, self._height = img.size()
@@ -57,6 +63,6 @@ class Frame(ming.Document):
         
     def save(self):
         self.image = self._imgcache #get any changes made before save
-        delete self.__dict__['_imgcache']
+        del self.__dict__['_imgcache']
         self.m.save()
        
