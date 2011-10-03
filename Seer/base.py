@@ -1,6 +1,7 @@
 import sys, time, os
 import threading
 import json
+import pygame.image
 from multiprocessing import Process, Queue, Pipe
 import threading
 
@@ -15,9 +16,8 @@ import IPython.Shell
 import pyfirmata
 import bson
 import ming
-import ming.orm
 from ming.datastore import DataStore
-from ming.orm.declarative import MappedClass
+
 
 
 import SimpleCV

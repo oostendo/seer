@@ -1,7 +1,7 @@
 from base import *
 from Session import Session
 
-class Watcher(MappedClass):
+class Watcher(ming.Document):
     """
     The Watcher reviews results in Seer, and has two handler patterns:
       - self.conditions takes any parameters in the Parameters object
@@ -29,7 +29,7 @@ class Watcher(MappedClass):
     w.check()
     """
     class __mongometa__:
-        session = Session().mingsession()
+        session = Session().mingsession
         name = 'watcher'
         
     _id = ming.Field(ming.schema.ObjectId)    
@@ -37,7 +37,7 @@ class Watcher(MappedClass):
     conditions = ming.Field(ming.schema.Array(str))
     handlers = ming.Field(ming.schema.Array(str))#this might be a relation 
     enabled = ming.Field(int)
-    parameters = ming.Field(ming.schema.Object)
+    parameters = ming.Field({str: None})
     
     def check(self):
         """
@@ -64,7 +64,7 @@ class Watcher(MappedClass):
     
     def threshold_greater(self, threshold, measurement_name, label, samples = 1):
         resultset = Seer().results[-samples:]
-        measurement = Measurement.query.get( name = measurement_name )
+        measurement = Measurement.m.get( name = measurement_name )
         if not measurement:
             return False
             
@@ -91,4 +91,3 @@ class Watcher(MappedClass):
             stat.m.save()
     
     
-ming.orm.Mapper.compile_all()   

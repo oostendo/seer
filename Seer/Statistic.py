@@ -20,7 +20,7 @@ class Statistic(ming.Document):
     
     _id = ming.Field(ming.schema.ObjectId)    
     
-    data = ming.Field(ming.schema.Object)
+    data = ming.Field({ str: None })
     name = ming.Field(str)
     capturetime = ming.Field(float)
     results = ming.Field(ming.schema.Array(ming.schema.ObjectID))
@@ -49,7 +49,7 @@ class Statistic(ming.Document):
                 
         
         for m_id in measurement_group.keys():
-            measurement = Measurement.query.get( _id = m_id )
+            measurement = Measurement.m.get( _id = m_id )
             if not measurement.is_numeric:
                 continue
             

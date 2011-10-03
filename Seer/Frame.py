@@ -7,12 +7,10 @@ from Session import Session
     
     Note that Frame.image property must be used as a getter-setter.
 
-    f = Frame({ 
-      capturetime = time.time(),
-      camera = "0" })
-      
-    f.image = Seer().cameras[0].getImage()
-    f.save()
+    >>> f = Seer.capture()[0]  #get a frame from the Seer module
+    >>> f.image.dl().line((0,0),(100,100))
+    >>> f.save()
+    >>> 
 """
 class Frame(ming.Document):
     class __mongometa__:
@@ -25,12 +23,13 @@ class Frame(ming.Document):
     _height = ming.Field(int, if_missing = 0)
     _width = ming.Field(int, if_missing = 0)
     _image = ming.Field(ming.schema.Binary) #binary image data
-    _layer = mingField(ming.schema.Binary, if_missing = None) #layer data
+    _layer = ming.Field(ming.schema.Binary, if_missing = None) #layer data
+    _imgcache = ming.Field(str, if_missing = '')
 
     @apply
     def image():
         def fget(self):
-            if self.__dict__.has_key('_imgcache'):
+            if self._imgcache != '':
                 return self._imgcache
             
             bitmap = cv.CreateImageHeader((self._width, self._height), cv.IPL_DEPTH_8U, 3)
@@ -38,9 +37,9 @@ class Frame(ming.Document):
             
             self._imgcache = Image(bitmap)
             if self._layer:
-                self._imgcache.dl()._mSurface = pygame.image.fromstring(self._layer, "RGBA")
+                self._imgcache.dl()._mSurface = pygame.image.fromstring(self._layer, self._imgcache.size(), "RGBA")
             
-            #TODO SET LAYER
+            return self._imgcache
             
           
         def fset(self, img):
@@ -48,10 +47,13 @@ class Frame(ming.Document):
             self._image = bson.Binary(img.getBitmap().tostring())
           
             if len(img._mLayers):
-                if len(img._mLayers > 1):
-                     img = img.copy()
-                     img.mergeLayers()
-                self._layer = bson.Binary(pygame.image.tostring(img.dl()._mSurface, "RGBA"))
+                if len(img._mLayers) > 1:
+                    mergedlayer = DrawingLayer(img.size())
+                    for layer in img._mLayers[::-1]:
+                        layer.renderToOtherLayer(mergedlayer)
+                else:
+                    mergedlayer = img.dl()
+                self._layer = bson.Binary(pygame.image.tostring(mergedlayer._mSurface, "RGBA"))
           
             self._imgcache = img
             
@@ -62,7 +64,9 @@ class Frame(ming.Document):
             self._width, self._height, self.camera, self.capturetime) 
         
     def save(self):
-        self.image = self._imgcache #get any changes made before save
-        del self.__dict__['_imgcache']
+        if self._imgcache != '':
+            self.image = self._imgcache #encode any layer changes made before save
+            self._imgcache = ''
+        
         self.m.save()
        

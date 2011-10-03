@@ -2,7 +2,7 @@ from base import *
 from Session import *
 from Measurement import Measurement
 
-class Inspection(MappedClass):
+class Inspection(ming.Document):
     """
     An Inspection determines what part of an image to look at from a given camera
     and what Measurement objects get taken.  It has a single handler, the roi_method,
@@ -19,21 +19,23 @@ class Inspection(MappedClass):
     The results from these measurements are aggregated and returned from the
     Inspection.execute() function, which gives all samples to each measurement.
     
-    insp = Inspection(
+    insp = Inspection(dict(
         name = "Blob Measurement 1",
         test_type = "Measurement",
         enabled = 1,
         roi_method = "fixed_window",
         camera = "0",
-        roi_parameters = ["100", "100", "400", "300"]) #x,y,w,h
+        roi_parameters = ["100", "100", "400", "300"])) #x,y,w,h
+
+    insp.save()
     
-    Measurement(..., inspection_id = ins._id )
+    Measurement(..., inspection_id = insp.id )
     
     results = insp.execute()
     
     """
     class __mongometa__:
-        session = Session().mingsession()
+        session = Session().mingsession
         name = 'inspection'
         
     _id = ming.Field(ming.schema.ObjectId)    
@@ -64,7 +66,7 @@ class Inspection(MappedClass):
         results = []
         frame.image.addDrawingLayer()
         for sample in samples:
-            
+            sampleresults = []
             for m in self.measurements:
                 r = m.calculate(sample)
                      
@@ -75,17 +77,21 @@ class Inspection(MappedClass):
                 r.inspection_id = self._id
                 r.measurement_id = m._id
                     
-                results.append[r]
+                sampleresults.append(r)
                 #probably need to add unit conversion here
             
+            results.append(sampleresults)
             frame.image.dl().blit(sample.applyLayers(), (roi[0], roi[1]))
 
         return results
     
+    def save(self):
+        self.m.save()
+        
     @property
     def measurements(self):
         #note, should figure out some way to cache this
-        return Measurement.m.find( inspection_id = self.id ).all()
+        return Measurement.m.find( inspection_id = self._id ).all()
 
 
     #below are "core" inspection functions
@@ -95,6 +101,3 @@ class Inspection(MappedClass):
         return (frame.image.crop(*params), params)
 #    def __json__(self):
     
-ming.orm.Mapper.compile_all()   
-for mapper in ming.orm.Mapper.all_mappers():
-    Session().mingsession.ensure_indexes(mapper.collection)

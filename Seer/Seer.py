@@ -32,8 +32,7 @@ class Seer(threading.Thread):
             self.cameras.append(Camera(id, camera))
         #log initialized camera X
 
-        self.inspections = Inspection.query.find( enabled = 1 ).all()
-        #self.inspections = Inspection.query.get( enabled = 1 )
+        self.inspections = Inspection.m.find( enabled = 1 ).all()
          
         self.conditions = []
         #self.conditions = Events.m.find( { "enabled": 1 }).all()
