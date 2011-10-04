@@ -1,3 +1,20 @@
-this is the first draft of architecture for the Seer Automatic Optical Inspector
+Installation instructions:
 
-It is probably broken. Tinker at your own risk.
+You must have SimpleCV installed first! http://simplecv.org
+
+Mac OS X (Using homebrew)
+========
+
+> brew install mongodb
+> easy_install ming
+> easy_install cherrypy
+> hg clone https://bitbucket.org/tino/pyfirmata && cd pyfirmata && python setup.py install
+
+Linux (Using apt-get)
+=======
+> apt-get install mongodb-server python-pymongo
+> easy_install ming
+> easy_install cherrypy
+> hg clone https://bitbucket.org/tino/pyfirmata && cd pyfirmata && python setup.
+py install
+
