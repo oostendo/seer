@@ -3,14 +3,14 @@ from Session import Session
 
 class Watcher(ming.Document):
     """
-    The Watcher reviews results in Seer, and has two handler patterns:
+    The Watcher reviews results in SimpleSeer, and has two handler patterns:
       - self.conditions takes any parameters in the Parameters object
         and returns a Statistic object.  Multiple conditions can be added and
         are considered implicitly ANDed.  It must refer to a class method.
       - self.handlers are function references that are fired if all conditions return statistic objects,
         and must be a class method.  They are sent the statistics as their parameter.
     
-    A typical watcher will have a sample size, and wil look in the Seer() to see
+    A typical watcher will have a sample size, and wil look in the SimpleSeer() to see
     the most recently recorded measurements.  It can check state on the entire system,
     and may potentially reference the Web, Control, and Display interfaces.  They
     also are responsible for recording any Results and Statistics.    
@@ -62,7 +62,7 @@ class Watcher(ming.Document):
     
     
     def threshold_greater(self, threshold, measurement_name, label, samples = 1):
-        resultset = Seer().results[-samples:]
+        resultset = SimpleSeer().results[-samples:]
         measurement = Measurement.m.get( name = measurement_name )
         if not measurement:
             return False

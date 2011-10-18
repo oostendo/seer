@@ -6,7 +6,7 @@ class Statistic(ming.Document):
     """
     
     s = Statistic( {
-       "name": "average of frame" + Seer().framecount,
+       "name": "average of frame" + SimpleSeer().framecount,
        "capturetime": time.time() }) #we may want to put another ID field on here
        
     s.calculate(results, "average", np.mean)

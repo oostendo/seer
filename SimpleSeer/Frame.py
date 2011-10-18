@@ -7,7 +7,7 @@ from Session import Session
     
     Note that Frame.image property must be used as a getter-setter.
 
-    >>> f = Seer.capture()[0]  #get a frame from the Seer module
+    >>> f = SimpleSeer.capture()[0]  #get a frame from the SimpleSeer module
     >>> f.image.dl().line((0,0),(100,100))
     >>> f.save()
     >>> 
@@ -60,7 +60,7 @@ class Frame(ming.Document):
         return property(fget, fset)
        
     def __repr__(self):
-       return "<Seer Frame Object %d,%d captured with '%s' at %f>" % (
+       return "<SimpleSeer Frame Object %d,%d captured with '%s' at %f>" % (
             self._width, self._height, self.camera, self.capturetime) 
         
     def save(self):

@@ -12,7 +12,7 @@ class ShellThread(threading.Thread):
         scvShell = setup_shell()
         sys.exit(scvShell())
 
-from Seer import Seer
+from SimpleSeer import SimpleSeer
 from Inspection import Inspection
 from Measurement import Measurement
 from Result import Result

@@ -2,9 +2,9 @@ from base import *
 from Session import Session
 from Inspection import Inspection
 
-class Seer(threading.Thread):
+class SimpleSeer(threading.Thread):
     """
-    The Seer object 
+    The SimpleSeer object 
     
     """
     __shared_state = { "initialized": False } 
@@ -20,7 +20,7 @@ class Seer(threading.Thread):
         self.__dict__ = self.__shared_state
         #ActiveState "Borg" Singleton replacement design
         if self.initialized:
-            return  #successive calls to Seer simply return the borg'd object
+            return  #successive calls to SimpleSeer simply return the borg'd object
 
         #read config file
         self.config = Session()
@@ -48,7 +48,7 @@ class Seer(threading.Thread):
         #self.controls = Controls(self.config['arduino'])
         
         self.initialized = True
-        super(Seer, self).__init__()
+        super(SimpleSeer, self).__init__()
         
         if self.config.start_shell:
             self.shell_thread = Shell.ShellThread()

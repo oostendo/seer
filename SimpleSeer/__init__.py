@@ -9,12 +9,12 @@ if __name__ == '__main__':
 
     Session(config_file)
 
-from Seer import Seer 
+from SimpleSeer import SimpleSeer 
 from Inspection import Inspection
 from Measurement import Measurement
 from Result import Result
 
 if __name__ == '__main__':
-    Seer()
+    SimpleSeer()
     
 

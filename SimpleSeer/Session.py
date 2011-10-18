@@ -3,7 +3,7 @@ from base import *
 class Session():
     """
     The session singleton must be instantiated with a configuration file reference
-    as it's sole parameter before any of the Seer classes are imported.  This
+    as it's sole parameter before any of the SimpleSeer classes are imported.  This
     is due to all of Ming's relational computations happening at import-time,
     so a database connection must be provided.
     
@@ -37,4 +37,4 @@ class Session():
         return ''  #return false on any non-present properties
     
     def __repr__(self):
-        return "Seer Session Object"
+        return "SimpleSeer Session Object"
